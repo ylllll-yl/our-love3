@@ -1,57 +1,164 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
+/* 重置样式 */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
+    box-sizing: border-box;
 }
 
+body {
+    font-family: 'Comic Sans MS', '楷体', sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 50%, #ccffec 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 小猫小狗装饰元素 */
+.cat-decoration, .dog-decoration {
+    position: fixed;
+    z-index: 1;
+    font-size: 40px;
+    animation: float 6s ease-in-out infinite;
+}
+
+.cat-decoration {
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.dog-decoration {
+    top: 15%;
+    right: 5%;
+    animation-delay: 3s;
+}
+
+.heart-decoration {
+    position: fixed;
+    font-size: 20px;
+    color: #ff6b6b;
+    animation: fall 10s linear infinite;
+    z-index: 1;
+}
+
+.heart-decoration:nth-child(3) { left: 10%; animation-delay: 0s; }
+.heart-decoration:nth-child(4) { left: 20%; animation-delay: 2s; }
+.heart-decoration:nth-child(5) { left: 30%; animation-delay: 4s; }
+.heart-decoration:nth-child(6) { left: 40%; animation-delay: 6s; }
+.heart-decoration:nth-child(7) { left: 60%; animation-delay: 8s; }
+.heart-decoration:nth-child(8) { left: 80%; animation-delay: 1s; }
+.heart-decoration:nth-child(9) { left: 90%; animation-delay: 3s; }
+
+/* 头部样式 */
 header {
-    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
     color: white;
     text-align: center;
-    padding: 2rem 0;
+    padding: 3rem 1rem;
+    margin: 2rem auto;
+    max-width: 90%;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    position: relative;
+    z-index: 2;
+    border: 8px solid white;
 }
 
 header h1 {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: 3rem;
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #fff, #ffeaa7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 header p {
-    margin: 0.5rem 0 0 0;
-    font-size: 1.2rem;
+    margin: 1rem 0 0 0;
+    font-size: 1.4rem;
+    opacity: 0.9;
 }
 
+/* 生日蛋糕样式 */
+.birthday-cake {
+    text-align: center;
+    margin: 1rem auto;
+    font-size: 2rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+/* 图片画廊样式 */
 .gallery {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
+    gap: 30px;
     padding: 20px;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
 }
 
+/* 多样化的照片框架 */
 .photo {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    width: 300px;
-    transition: transform 0.3s ease;
+    width: 350px;
+    transition: all 0.4s ease;
+    position: relative;
+    border: 5px solid transparent;
+    background-clip: padding-box;
+}
+
+.photo::before {
+    content: '';
+    position: absolute;
+    top: -5px; left: -5px; right: -5px; bottom: -5px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+    border-radius: 25px;
+    z-index: -1;
+    animation: gradientShift 3s ease infinite;
+}
+
+.photo:nth-child(odd)::before {
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e);
+}
+
+.photo:nth-child(even)::before {
+    background: linear-gradient(45deg, #a1c4fd, #c2e9fb, #c2e9fb, #a1c4fd);
 }
 
 .photo:hover {
-    transform: translateY(-5px);
+    transform: translateY(-15px) scale(1.05);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+}
+
+.photo-frame {
+    position: relative;
+    overflow: hidden;
 }
 
 .photo img {
     width: 100%;
-    height: 250px;
+    height: 280px;
     object-fit: cover;
     display: block;
+    transition: transform 0.4s ease;
+}
+
+.photo:hover img {
+    transform: scale(1.1);
+}
+
+.photo-content {
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(to bottom, white, #f8f9fa);
 }
 
 .photo p {
@@ -59,11 +166,84 @@ header p {
     margin: 0;
     text-align: center;
     font-style: italic;
+    color: #555;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    border-left: 4px solid #ff6b6b;
 }
 
+/* 页脚样式 */
 footer {
     text-align: center;
     padding: 2rem;
-    background-color: #eee;
-    margin-top: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-top: 3rem;
+    border-radius: 20px 20px 0 0;
+    position: relative;
+    z-index: 2;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 动画效果 */
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes fall {
+    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes gradientShift {
+    0%, 100% { filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(180deg); }
+}
+
+/* 音乐播放器样式 */
+.music-player {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.music-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    font-family: 'Comic Sans MS', '楷体', sans-serif;
+}
+
+.music-btn:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.music-btn.playing {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    header h1 { font-size: 2rem; }
+    header p { font-size: 1.1rem; }
+    .photo { width: 100%; max-width: 400px; }
+    .cat-decoration, .dog-decoration { font-size: 30px; }
 }
