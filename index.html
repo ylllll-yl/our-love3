@@ -78,6 +78,31 @@ document.addEventListener('touchstart', function(e) {
 
 <!-- 生日蛋糕 -->
 <div class="birthday-cake">🎂 生日快乐！ 🎂</div>
+    <!-- 音频播放器 -->
+<div class="audio-player">
+    <audio id="bgMusic" loop>
+        <source src="music/background-music.mp3" type="audio/mpeg">
+    </audio>
+    <button id="playPauseBtn" class="audio-btn">▶️ 播放音乐</button>
+</div>
+
+<script>
+// 音频控制
+const audio = document.getElementById('bgMusic');
+const playPauseBtn = document.getElementById('playPauseBtn');
+
+playPauseBtn.addEventListener('click', function() {
+    if (audio.paused) {
+        audio.play();
+        playPauseBtn.innerHTML = '⏸️ 暂停音乐';
+        playPauseBtn.classList.add('playing');
+    } else {
+        audio.pause();
+        playPauseBtn.innerHTML = '▶️ 播放音乐';
+        playPauseBtn.classList.remove('playing');
+    }
+});
+</script>
 <body>
     <header>
         <h1>❤️ 我们的时光记忆 ❤️</h1>
