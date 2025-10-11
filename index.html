@@ -437,9 +437,8 @@ function addPutianCenterMarker() {
     
     putianMarker.bindPopup(`
         <div class="map-popup">
-            <h4>🏠 我们的家 - 莆田</h4>
-            <p>这是我们爱情故事开始的地方</p>
-            <p>福建省莆田市 - 我们共同的城市</p>
+            <h4>🏠莆田</h4>
+            <p>我们爱情故事开始的地方  小宝贝~</p>
         </div>
     `);
 }
@@ -593,45 +592,6 @@ function showMessage(text) {
         message.remove();
     }, 3000);
 }
-
-// 添加一些莆田相关的示例数据
-function addSampleMemories() {
-    if (memories.length === 0) {
-        const sampleMemories = [
-            {
-                id: 1,
-                name: '莆田学院',
-                address: '莆田市城厢区学园中街',
-                date: '2025-01-23',
-                description: '我们相遇的地方，世界上的另一个自己在这里出现',
-                coordinates: [25.439, 118.998],
-                type: 'memory'
-            },
-            {
-                id: 2,
-                name: '第一次约会',
-                address: '莆田市某猫咖',
-                date: '2025-05-01',
-                description: '第一次正式约会，小猫很可爱，我们在往更对的方向接近',
-                coordinates: [25.454, 119.008],
-                type: 'memory'
-            },
-            {
-                id: 3,
-                name: '湄洲岛之旅',
-                address: '莆田市秀屿区湄洲岛',
-                date: '2025-06-28',
-                description: '第一次旅行，在这里我们正式确定了关系！',
-                coordinates: [25.083, 119.133],
-                type: 'memory'
-            }
-        ];
-        
-        memories = sampleMemories;
-        saveMemories();
-    }
-}
-
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
     initLoveMap();
