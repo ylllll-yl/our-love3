@@ -129,6 +129,61 @@ playPauseBtn.addEventListener('click', function() {
     <!-- 你现有的所有其他内容 -->
     <header>...</header>
     <!-- 其余内容保持不变 -->
+    <script>
+// 密码验证功能
+function checkPassword() {
+    const passwordInput = document.getElementById('passwordInput');
+    const password = passwordInput.value;
+    const correctPassword = '20031026'; // 你的密码
+    
+    console.log('调试信息：输入=' + password + ', 正确=' + correctPassword);
+    
+    if (password === correctPassword) {
+        // 密码正确
+        document.getElementById('passwordOverlay').style.display = 'none';
+        document.body.classList.remove('hidden-content');
+        alert('🎉 密码正确！欢迎来到我们的专属空间！');
+    } else {
+        // 密码错误
+        passwordInput.style.borderColor = '#ff4757';
+        passwordInput.style.background = '#ffeaea';
+        passwordInput.value = '';
+        passwordInput.placeholder = '❌ 密码错误，再试一次...';
+        
+        // 震动效果
+        passwordInput.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => {
+            passwordInput.style.animation = '';
+        }, 500);
+    }
+}
+
+// 回车键提交
+document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        checkPassword();
+    }
+});
+
+// 页面加载时隐藏主内容
+document.addEventListener('DOMContentLoaded', function() {
+    document.body.classList.add('hidden-content');
+});
+</script>
+
+<style>
+/* 震动动画 */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* 隐藏主内容的样式 */
+body.hidden-content > *:not(.password-overlay) {
+    display: none !important;
+}
+</style>
 <body>
     <header>
         <h1>❤️ 我们的时光记忆 ❤️</h1>
