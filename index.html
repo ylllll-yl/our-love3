@@ -396,6 +396,299 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 </style>
+    <!-- 引入Leaflet地图库 -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// 🗺️ 爱情地图功能 - 以莆田市为中心
+let loveMap = null;
+let memories = JSON.parse(localStorage.getItem('loveMemories')) || [];
+let markers = [];
+
+// 初始化地图 - 修改为中心定位莆田市
+function initLoveMap() {
+    // 创建地图，以莆田市为中心 - 莆田市坐标：[25.454, 119.008]
+    loveMap = L.map('loveMap').setView([25.454, 119.008], 12); // 莆田市中心，缩放级别12
+    
+    // 添加地图图层（使用高德地图）
+    L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+        subdomains: ['1', '2', '3', '4'],
+        attribution: '&copy; <a href="https://www.amap.com/">高德地图</a>'
+    }).addTo(loveMap);
+    
+    // 在莆田市位置添加一个特殊标记
+    addPutianCenterMarker();
+    
+    // 加载已有的回忆地点
+    loadMemories();
+}
+
+// 在莆田市中心添加特殊标记
+function addPutianCenterMarker() {
+    const putianMarker = L.marker([25.454, 119.008], {
+        icon: L.divIcon({
+            className: 'putian-marker',
+            html: '🏠',
+            iconSize: [40, 40],
+            iconAnchor: [20, 40]
+        })
+    }).addTo(loveMap);
+    
+    putianMarker.bindPopup(`
+        <div class="map-popup">
+            <h4>🏠 我们的家 - 莆田</h4>
+            <p>这是我们爱情故事开始的地方</p>
+            <p>福建省莆田市 - 我们共同的城市</p>
+        </div>
+    `);
+}
+
+// 添加回忆地点
+function addMemoryLocation() {
+    const name = document.getElementById('locationName').value.trim();
+    const address = document.getElementById('locationAddress').value.trim();
+    const date = document.getElementById('visitDate').value;
+    const description = document.getElementById('memoryDescription').value.trim();
+    
+    if (!name || !address) {
+        alert('💝 请至少填写地点名称和地址哦~');
+        return;
+    }
+    
+    // 使用莆田市范围内的随机坐标
+    const memory = {
+        id: Date.now(),
+        name: name,
+        address: address,
+        date: date || new Date().toISOString().split('T')[0],
+        description: description,
+        coordinates: getPutianCoordinates(), // 使用莆田范围内的坐标
+        type: 'memory'
+    };
+    
+    memories.push(memory);
+    saveMemories();
+    addMarkerToMap(memory);
+    updateMemoriesList();
+    
+    // 清空表单
+    document.getElementById('locationName').value = '';
+    document.getElementById('locationAddress').value = '';
+    document.getElementById('visitDate').value = '';
+    document.getElementById('memoryDescription').value = '';
+    
+    showMessage('📍 回忆地点已添加！');
+}
+
+// 生成莆田市范围内的坐标
+function getPutianCoordinates() {
+    // 莆田市大致的经纬度范围
+    const putianBounds = {
+        north: 25.7,   // 北纬
+        south: 25.2,   // 南纬  
+        east: 119.3,   // 东经
+        west: 118.7    // 西经
+    };
+    
+    const lat = putianBounds.south + Math.random() * (putianBounds.north - putianBounds.south);
+    const lng = putianBounds.west + Math.random() * (putianBounds.east - putianBounds.west);
+    return [lat, lng];
+}
+
+// 添加标记到地图
+function addMarkerToMap(memory) {
+    const marker = L.marker(memory.coordinates, {
+        icon: L.divIcon({
+            className: 'custom-marker',
+            html: '💖',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30]
+        })
+    }).addTo(loveMap);
+    
+    // 弹出信息框
+    marker.bindPopup(`
+        <div class="map-popup">
+            <h4>${memory.name}</h4>
+            <p>📍 ${memory.address}</p>
+            <p>📅 ${memory.date}</p>
+            <p>${memory.description || '这是我们美好的回忆~'}</p>
+            <button onclick="focusOnMemory(${memory.id})" class="focus-btn">🔍 查看详情</button>
+        </div>
+    `);
+    
+    markers.push({ id: memory.id, marker: marker });
+}
+
+// 聚焦到特定回忆
+function focusOnMemory(memoryId) {
+    const memory = memories.find(m => m.id === memoryId);
+    if (memory) {
+        loveMap.setView(memory.coordinates, 15); // 放大到更近的级别
+        
+        // 高亮对应的列表项
+        document.querySelectorAll('.memory-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        const targetItem = document.querySelector(`.memory-item[data-id="${memoryId}"]`);
+        if (targetItem) {
+            targetItem.classList.add('active');
+        }
+    }
+}
+
+// 更新回忆列表
+function updateMemoriesList() {
+    const container = document.getElementById('memoriesList');
+    
+    if (memories.length === 0) {
+        container.innerHTML = '<div class="no-memories">还没有添加回忆地点呢~</div>';
+        return;
+    }
+    
+    container.innerHTML = memories.map(memory => `
+        <div class="memory-item" data-id="${memory.id}" onclick="focusOnMemory(${memory.id})">
+            <div class="memory-name">📍 ${memory.name}</div>
+            <div class="memory-address">🏠 ${memory.address}</div>
+            <div class="memory-date">📅 ${memory.date}</div>
+            <div class="memory-desc">${memory.description || '美好的回忆~'}</div>
+        </div>
+    `).join('');
+}
+
+// 加载所有回忆
+function loadMemories() {
+    memories.forEach(memory => {
+        addMarkerToMap(memory);
+    });
+    updateMemoriesList();
+}
+
+// 保存到本地存储
+function saveMemories() {
+    localStorage.setItem('loveMemories', JSON.stringify(memories));
+}
+
+// 显示消息提示
+function showMessage(text) {
+    const message = document.createElement('div');
+    message.textContent = text;
+    message.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 25px;
+        box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        z-index: 10000;
+        animation: slideInRight 0.5s ease;
+    `;
+    
+    document.body.appendChild(message);
+    
+    setTimeout(() => {
+        message.remove();
+    }, 3000);
+}
+
+// 添加一些莆田相关的示例数据
+function addSampleMemories() {
+    if (memories.length === 0) {
+        const sampleMemories = [
+            {
+                id: 1,
+                name: '莆田学院',
+                address: '莆田市城厢区学园中街',
+                date: '2025-01-23',
+                description: '我们相遇的地方，世界上的另一个自己在这里出现',
+                coordinates: [25.439, 118.998],
+                type: 'memory'
+            },
+            {
+                id: 2,
+                name: '第一次约会',
+                address: '莆田市某猫咖',
+                date: '2025-05-01',
+                description: '第一次正式约会，小猫很可爱，我们在往更对的方向接近',
+                coordinates: [25.454, 119.008],
+                type: 'memory'
+            },
+            {
+                id: 3,
+                name: '湄洲岛之旅',
+                address: '莆田市秀屿区湄洲岛',
+                date: '2025-06-28',
+                description: '第一次旅行，在这里我们正式确定了关系！',
+                coordinates: [25.083, 119.133],
+                type: 'memory'
+            }
+        ];
+        
+        memories = sampleMemories;
+        saveMemories();
+    }
+}
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', function() {
+    initLoveMap();
+    addSampleMemories();
+});
+</script>
+
+<style>
+/* 莆田中心标记样式 */
+.putian-marker {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+}
+
+/* 地图弹窗样式 */
+.map-popup {
+    text-align: center;
+    min-width: 200px;
+}
+
+.map-popup h4 {
+    color: #ff6b6b;
+    margin-bottom: 10px;
+}
+
+.map-popup p {
+    color: #666;
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.focus-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: 'Comic Sans MS', '楷体', cursive;
+    font-size: 12px;
+}
+
+.no-memories {
+    text-align: center;
+    color: #ff8e8e;
+    font-style: italic;
+    padding: 20px;
+}
+
+.memory-address {
+    color: #ff8e8e;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+</style>
 <body>
     <header>
         <h1>❤️游先生和冯小朋友的小时光❤️</h1>
@@ -551,6 +844,40 @@ document.addEventListener('DOMContentLoaded', function() {
         <h3>✍️ 回复这封情书</h3>
         <textarea id="replyContent" placeholder="回复你的心里话..."></textarea>
         <button onclick="sendReply()" class="reply-btn">💝 发送回复</button>
+    </div>
+</section>
+    <!-- 🗺️ 我们的爱情地图 -->
+<section class="love-map-section">
+    <div class="map-header">
+        <div class="map-heart">🌍</div>
+        <h2>我们的爱情足迹</h2>
+        <p>记录我们一起走过的每一个地方</p>
+    </div>
+
+    <!-- 地图容器 -->
+    <div class="map-container">
+        <div id="loveMap" class="love-map"></div>
+        
+        <!-- 地图控制面板 -->
+        <div class="map-controls">
+            <div class="add-memory">
+                <h3>💝 这里可以添加新的回忆地点哦！</h3>
+                <div class="memory-form">
+                    <input type="text" id="locationName" placeholder="地点名称（如：西湖边）">
+                    <input type="text" id="locationAddress" placeholder="具体地址（如：杭州市西湖区）">
+                    <input type="date" id="visitDate">
+                    <textarea id="memoryDescription" placeholder="在这里的回忆..."></textarea>
+                    <button onclick="addMemoryLocation()" class="add-btn">📍 添加回忆地点</button>
+                </div>
+            </div>
+            
+            <div class="memories-list">
+                <h3>📌 我们的足迹</h3>
+                <div id="memoriesList" class="memories-container">
+                    <!-- 回忆地点列表会动态显示在这里 -->
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
