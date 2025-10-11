@@ -221,6 +221,181 @@ document.addEventListener('DOMContentLoaded', function() {
 // 调试：检查元素是否存在
 console.log('计时器元素:', document.getElementById('loveTimer'));
 </script>
+    <script>
+// 💌 情书系统功能
+let letters = JSON.parse(localStorage.getItem('loveLetters')) || [];
+let currentReplyId = null;
+
+// 初始化情书系统
+function initLettersSystem() {
+    displayLetters();
+}
+
+// 发送情书
+function sendLetter() {
+    const to = document.getElementById('letterTo').value;
+    const content = document.getElementById('letterContent').value.trim();
+    
+    if (!content) {
+        alert('💝 请先写下你的心里话哦~');
+        return;
+    }
+    
+    const letter = {
+        id: Date.now(),
+        from: to === 'you' ? '冯小朋友' : '游先生',
+        to: to === 'you' ? '游先生' : '冯小朋友',
+        content: content,
+        timestamp: new Date().toLocaleString('zh-CN'),
+        reply: null
+    };
+    
+    letters.unshift(letter);
+    saveLetters();
+    displayLetters();
+    
+    // 清空输入框
+    document.getElementById('letterContent').value = '';
+    
+    // 显示发送成功动画
+    showMessage('💌 情书已寄出！');
+}
+
+// 保存草稿
+function saveDraft() {
+    const content = document.getElementById('letterContent').value;
+    if (content) {
+        localStorage.setItem('letterDraft', content);
+        showMessage('📁 草稿已保存！');
+    }
+}
+
+// 显示所有情书
+function displayLetters() {
+    const container = document.getElementById('lettersContainer');
+    
+    if (letters.length === 0) {
+        container.innerHTML = '<div class="no-letters">还没有情书呢，写第一封吧！</div>';
+        return;
+    }
+    
+    container.innerHTML = letters.map(letter => `
+        <div class="letter-item">
+            <div class="letter-header">
+                <div class="letter-from">💝 ${letter.from} → ${letter.to}</div>
+                <div class="letter-time">${letter.timestamp}</div>
+            </div>
+            <div class="letter-content">${letter.content}</div>
+            ${letter.reply ? `
+                <div class="letter-reply">
+                    <div class="reply-header">💌 ${letter.to}的回复：</div>
+                    <div class="reply-content">${letter.reply.content}</div>
+                    <div class="reply-time">${letter.reply.timestamp}</div>
+                </div>
+            ` : `
+                <button onclick="showReplyForm(${letter.id})" class="reply-btn" style="margin-top: 10px; padding: 8px 15px;">
+                    ✍️ 回复这封情书
+                </button>
+            `}
+        </div>
+    `).join('');
+}
+
+// 显示回复表单
+function showReplyForm(letterId) {
+    currentReplyId = letterId;
+    document.getElementById('replySection').style.display = 'block';
+    
+    // 滚动到回复区域
+    document.getElementById('replySection').scrollIntoView({ 
+        behavior: 'smooth' 
+    });
+}
+
+// 发送回复
+function sendReply() {
+    const content = document.getElementById('replyContent').value.trim();
+    
+    if (!content) {
+        alert('💝 请写下你的回复哦~');
+        return;
+    }
+    
+    const letter = letters.find(l => l.id === currentReplyId);
+    if (letter) {
+        letter.reply = {
+            content: content,
+            timestamp: new Date().toLocaleString('zh-CN')
+        };
+        
+        saveLetters();
+        displayLetters();
+        
+        // 隐藏回复区域并清空
+        document.getElementById('replySection').style.display = 'none';
+        document.getElementById('replyContent').value = '';
+        currentReplyId = null;
+        
+        showMessage('💌 回复已发送！');
+    }
+}
+
+// 保存到本地存储
+function saveLetters() {
+    localStorage.setItem('loveLetters', JSON.stringify(letters));
+}
+
+// 显示消息提示
+function showMessage(text) {
+    const message = document.createElement('div');
+    message.textContent = text;
+    message.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 25px;
+        box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        z-index: 10000;
+        animation: slideInRight 0.5s ease;
+    `;
+    
+    document.body.appendChild(message);
+    
+    setTimeout(() => {
+        message.remove();
+    }, 3000);
+}
+
+// 加载草稿
+function loadDraft() {
+    const draft = localStorage.getItem('letterDraft');
+    if (draft) {
+        document.getElementById('letterContent').value = draft;
+    }
+}
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', function() {
+    initLettersSystem();
+    loadDraft();
+});
+</script>
+
+<style>
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+</style>
 <body>
     <header>
         <h1>❤️游先生和冯小朋友的小时光❤️</h1>
@@ -338,7 +513,47 @@ console.log('计时器元素:', document.getElementById('loveTimer'));
         <div class="floating-hearts">💖💕💗💓💞</div>
         <p>游先生和小冯同学的故事还有很多很多 一直都会有 直到慢慢的老去 直到我们一起飞到了另外一个世界上 由新的小小的亲爱的人 来回忆我们</p>
     </div>
+    <!-- 💌 我们的秘密情书系统 -->
+<section class="love-letters-section">
+    <div class="letters-header">
+        <div class="letter-heart">✉️</div>
+        <h2>我们的秘密情书</h2>
+        <p>写下想对彼此说的话...</p>
+    </div>
+
+    <!-- 写信区域 -->
+    <div class="write-letter">
+        <h3>💖 写一封情书</h3>
+        <div class="letter-form">
+            <select id="letterTo">
+                <option value="you">📝 写给游先生</option>
+                <option value="me">📝 写给冯小朋友</option>
+            </select>
+            <textarea id="letterContent" placeholder="在这里写下你的心里话..."></textarea>
+            <div class="letter-actions">
+                <button onclick="sendLetter()" class="send-btn">💌 寄出情书</button>
+                <button onclick="saveDraft()" class="draft-btn">📁 保存草稿</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 情书展示区 -->
+    <div class="letters-display">
+        <h3>📬 我们的情书往来</h3>
+        <div class="letters-container" id="lettersContainer">
+            <!-- 情书会动态显示在这里 -->
+            <div class="no-letters">还没有情书呢，写第一封吧！</div>
+        </div>
+    </div>
+
+    <!-- 回复功能 -->
+    <div class="reply-section" id="replySection" style="display: none;">
+        <h3>✍️ 回复这封情书</h3>
+        <textarea id="replyContent" placeholder="回复你的心里话..."></textarea>
+        <button onclick="sendReply()" class="reply-btn">💝 发送回复</button>
+    </div>
 </section>
+
 
     <footer>
         <p>Created with love for you. 💖</p>
