@@ -117,8 +117,8 @@ playPauseBtn.addEventListener('click', function() {
                 <p>冯小朋友！！猜猜密码是什么~💕</p>
             </div>
             <div class="password-input-group">
-                <input type="password" id="passwordInput" class="password-input" placeholder="所有人事已非的景色里 我最喜欢你" maxlength="8">
-                <button onclick="checkPassword()" class="password-btn">打开属于我们的小世界  宝宝真棒！！！</button>
+                <input type="password" id="passwordInput" class="password-input" placeholder="我最喜欢你" maxlength="8">
+                <button onclick="checkPassword()" class="password-btn">点此此处打开属于我们的小世界</button>
             </div>
             <div class="password-hint">
                 <span>💝 提示：这是一个8位数字密码</span>
@@ -183,13 +183,49 @@ body.hidden-content > *:not(.password-overlay) {
     display: none !important;
 }
 </style>
+    <script>
+// 💕 爱情计时器功能
+function initLoveTimer() {
+    // 🎯 重要：修改为你们实际在一起的日期！
+    const startDate = new Date('2023-10-26'); // 格式：年-月-日
+    
+    function updateLoveTimer() {
+        const now = new Date();
+        const diff = now - startDate;
+        
+        // 计算时间
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        // 更新显示
+        document.getElementById('loveTimer').innerHTML = 
+            `我们已经相爱 <span style="color:#ff4757;">${days}</span> 天 
+            <span style="color:#ff6b6b;">${hours}</span> 小时 
+            <span style="color:#ff8e8e;">${minutes}</span> 分钟 
+            <span style="color:#ffafbd;">${seconds}</span> 秒 💖`;
+    }
+    
+    // 启动计时器
+    updateLoveTimer();
+    setInterval(updateLoveTimer, 1000);
+}
+
+// 页面加载后启动计时器
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('页面加载完成，启动计时器...');
+    initLoveTimer();
+});
+
+// 调试：检查元素是否存在
+console.log('计时器元素:', document.getElementById('loveTimer'));
+</script>
 <body>
     <header>
         <h1>❤️游先生和冯小朋友的小时光❤️</h1>
         <p>这里记录着我们在一起的每一个美好瞬间</p>
     </header>
-<!-- 在header后面添加计时器 -->
-<header>
     <!-- 你现有的header内容 -->
     <h1>❤️小时光❤️</h1>
     <p>这里记录着我们在一起的每一个美好瞬间</p>
