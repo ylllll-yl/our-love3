@@ -103,6 +103,33 @@ playPauseBtn.addEventListener('click', function() {
     }
 });
 </script>
+    <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 你现有的head内容 -->
+</head>
+<body>
+    <!-- 🎀 密码保护界面 - 添加在这里 -->
+    <div id="passwordOverlay" class="password-overlay">
+        <div class="password-container">
+            <div class="password-header">
+                <div class="password-heart">💖</div>
+                <h2>专属爱情密码</h2>
+                <p>请输入我们的秘密数字 💕</p>
+            </div>
+            <div class="password-input-group">
+                <input type="password" id="passwordInput" class="password-input" placeholder="🦄 输入我们的纪念日..." maxlength="8">
+                <button onclick="checkPassword()" class="password-btn">✨ 解锁我们的回忆</button>
+            </div>
+            <div class="password-hint">
+                <span>💝 提示：这是一个8位数字密码</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 你现有的所有其他内容 -->
+    <header>...</header>
+    <!-- 其余内容保持不变 -->
 <body>
     <header>
         <h1>❤️ 我们的时光记忆 ❤️</h1>
