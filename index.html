@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我们的故事</title>
+    <title>我们的小时光</title>
     <link rel="stylesheet" href="style.css">
 </head>
     <!-- 小猫小狗装饰 -->
@@ -77,13 +77,13 @@ document.addEventListener('touchstart', function(e) {
 <div class="heart-decoration">❤️</div>
 
 <!-- 生日蛋糕 -->
-<div class="birthday-cake">🎂 生日快乐！ 🎂</div>
+<div class="birthday-cake">🎂 生日快乐小冯同学 happybirthday 🎂</div>
     <!-- 音频播放器 -->
 <div class="audio-player">
     <audio id="bgMusic" loop>
         <source src="music/有我呢.mp3" type="audio/mpeg">
     </audio>
-    <button id="playPauseBtn" class="audio-btn">▶️ 播放音乐</button>
+    <button id="playPauseBtn" class="audio-btn">▶️Play music</button>
 </div>
 
 <script>
@@ -94,11 +94,11 @@ const playPauseBtn = document.getElementById('playPauseBtn');
 playPauseBtn.addEventListener('click', function() {
     if (audio.paused) {
         audio.play();
-        playPauseBtn.innerHTML = '⏸️ 暂停音乐';
+        playPauseBtn.innerHTML = '⏸️Pause the music';
         playPauseBtn.classList.add('playing');
     } else {
         audio.pause();
-        playPauseBtn.innerHTML = '▶️ 播放音乐';
+        playPauseBtn.innerHTML = '▶️Play music';
         playPauseBtn.classList.remove('playing');
     }
 });
@@ -113,12 +113,12 @@ playPauseBtn.addEventListener('click', function() {
         <div class="password-container">
             <div class="password-header">
                 <div class="password-heart">💖</div>
-                <h2>专属爱情密码</h2>
-                <p>请输入我们的秘密数字 💕</p>
+                <h2>专属密码</h2>
+                <p>冯小朋友！！猜猜密码是什么~💕</p>
             </div>
             <div class="password-input-group">
-                <input type="password" id="passwordInput" class="password-input" placeholder="🦄 输入我们的纪念日..." maxlength="8">
-                <button onclick="checkPassword()" class="password-btn">✨ 解锁我们的回忆</button>
+                <input type="password" id="passwordInput" class="password-input" placeholder="所有人事已非的景色里 我最喜欢你" maxlength="8">
+                <button onclick="checkPassword()" class="password-btn">打开属于我们的小世界  宝宝真棒！！！</button>
             </div>
             <div class="password-hint">
                 <span>💝 提示：这是一个8位数字密码</span>
@@ -141,13 +141,13 @@ function checkPassword() {
         // 密码正确
         document.getElementById('passwordOverlay').style.display = 'none';
         document.body.classList.remove('hidden-content');
-        alert('🎉 密码正确！欢迎来到我们的专属空间！');
+        alert('🎉 密码正确！小宝真棒！（这都猜不出来的话真的可以判定猪气上身了哈）');
     } else {
         // 密码错误
         passwordInput.style.borderColor = '#ff4757';
         passwordInput.style.background = '#ffeaea';
         passwordInput.value = '';
-        passwordInput.placeholder = '❌ 密码错误，再试一次...';
+        passwordInput.placeholder = '❌ 密码错误 你再猜猜呢小笨猪';
         
         // 震动效果
         passwordInput.style.animation = 'shake 0.5s ease-in-out';
@@ -185,27 +185,27 @@ body.hidden-content > *:not(.password-overlay) {
 </style>
 <body>
     <header>
-        <h1>❤️ 我们的时光记忆 ❤️</h1>
+        <h1>❤️游先生和冯小朋友的小时光❤️</h1>
         <p>这里记录着我们在一起的每一个美好瞬间</p>
     </header>
 
     <main class="gallery">
         <!-- 照片1 -->
         <div class="photo">
-            <img src="images/1.jpg" alt="我们的第一张合影">
-            <p>这是我们第一次一起去旅行，在西湖边。</p>
+            <img src="images/1.jpg" alt="我们最出片的一张照片！男帅女美！">
+            <p>这是我们第一次在莆田之外的地方见面，虽然只去西街玩了一段时间 其他时间..哈哈  我们真的很好看！</p>
         </div>
 
         <!-- 照片2 -->
         <div class="photo">
-            <img src="images/2.jpg" alt="庆祝生日">
-            <p>为你庆祝生日的那个晚上，你笑得很开心。</p>
+            <img src="images/2.jpg" alt="2025.9月份的见面">
+            <p>其实这张照片我也觉得挺好看的 那几天悠哉悠哉的 在彼此身边的小日子很幸福</p>
         </div>
 
         <!-- 照片3 -->
         <div class="photo">
-            <img src="images/3.jpg" alt="日常晚餐">
-            <p>一次普通的居家晚餐，却因为有你而变得特别。</p>
+            <img src="images/3.jpg" alt="啵啵">
+            <p>亲亲亲亲亲亲亲亲亲亲 作为聊天背景板聊天都会变得很有食欲</p>
         </div>
     </main>
 
