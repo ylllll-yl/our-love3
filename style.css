@@ -550,3 +550,193 @@ body.hidden-content > *:not(.password-overlay) {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); }
 }
+/* 💕 心动回忆录样式 */
+.memory-section {
+    background: linear-gradient(135deg, rgba(255, 175, 189, 0.1), rgba(255, 195, 160, 0.1));
+    padding: 50px 20px;
+    margin: 40px 0;
+    position: relative;
+}
+
+.memory-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.memory-heart {
+    font-size: 50px;
+    margin-bottom: 15px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.memory-header h2 {
+    color: #ff6b6b;
+    font-size: 2.5rem;
+    margin: 10px 0;
+    text-shadow: 2px 2px 0 rgba(255, 182, 193, 0.3);
+}
+
+.memory-header p {
+    color: #ff8e8e;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* 时间线样式 */
+.memory-timeline {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.memory-timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #ff6b6b, #ffafbd);
+    transform: translateX(-50%);
+    border-radius: 10px;
+}
+
+.memory-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+    position: relative;
+}
+
+.memory-item:nth-child(odd) {
+    flex-direction: row;
+}
+
+.memory-item:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.memory-date {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+    color: #ff6b6b;
+    font-weight: bold;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+    border: 2px solid rgba(255, 182, 193, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.memory-content {
+    flex: 2;
+    padding: 25px;
+    margin: 0 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.15);
+    border: 2px solid rgba(255, 182, 193, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.memory-content::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    background: #ff6b6b;
+    border: 3px solid white;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.memory-item:nth-child(odd) .memory-content::before {
+    right: -30px;
+}
+
+.memory-item:nth-child(even) .memory-content::before {
+    left: -30px;
+}
+
+.memory-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(255, 107, 107, 0.25);
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+.memory-title {
+    color: #ff6b6b;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: 'Comic Sans MS', '楷体', cursive;
+}
+
+.memory-text {
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.memory-footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid rgba(255, 182, 193, 0.3);
+}
+
+.floating-hearts {
+    font-size: 30px;
+    margin-bottom: 15px;
+    animation: float 2s ease-in-out infinite;
+}
+
+.memory-footer p {
+    color: #ff8e8e;
+    font-size: 1.1rem;
+    font-style: italic;
+    margin: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .memory-timeline::before {
+        left: 30px;
+    }
+    
+    .memory-item {
+        flex-direction: column !important;
+        align-items: flex-start;
+        margin-left: 60px;
+    }
+    
+    .memory-date {
+        align-self: flex-start;
+        margin-bottom: 15px;
+    }
+    
+    .memory-content {
+        margin: 0;
+    }
+    
+    .memory-content::before {
+        left: -40px !important;
+        right: auto !important;
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
