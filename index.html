@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我们的小时光</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+    <!-- 在 <head> 标签内引入 LeanCloud SDK -->
 <script src="//cdn.jsdelivr.net/npm/leancloud-storage@4.13.2/dist/av-min.js"></script>
+<!-- 引入你自己的业务逻辑JS文件，我们接下来会创建它 -->
 <script src="js/loveData.js"></script>
     <!-- 小猫小狗装饰 -->
 <div class="cat-decoration">🐱</div>
@@ -15,7 +14,7 @@ function createHeart(x, y) {
     const heart = document.createElement('div');
     const hearts = ['❤️', '💖', '💕', '💗', '💓', '💞'];
     const randomHeart = hearts[Math.floor(Math.random() * hearts.length)];
-    
+
     heart.innerHTML = randomHeart;
     heart.style.position = 'fixed';
     heart.style.left = (x - 15) + 'px';
@@ -25,9 +24,9 @@ function createHeart(x, y) {
     heart.style.zIndex = '9999';
     heart.style.animation = `heartFloat ${Math.random() * 1 + 1}s ease-out forwards`;
     heart.style.filter = `hue-rotate(${Math.random() * 360}deg)`; // 随机颜色
-    
+
     document.body.appendChild(heart);
-    
+
     setTimeout(() => {
         if (heart.parentNode) {
             heart.remove();
@@ -134,9 +133,9 @@ function checkPassword() {
     const passwordInput = document.getElementById('passwordInput');
     const password = passwordInput.value;
     const correctPassword = '20031026'; // 你的密码
-    
+
     console.log('调试信息：输入=' + password + ', 正确=' + correctPassword);
-    
+
     if (password === correctPassword) {
         // 密码正确
         document.getElementById('passwordOverlay').style.display = 'none';
@@ -148,7 +147,7 @@ function checkPassword() {
         passwordInput.style.background = '#ffeaea';
         passwordInput.value = '';
         passwordInput.placeholder = '❌ 密码错误 你再猜猜呢小笨猪';
-        
+
         // 震动效果
         passwordInput.style.animation = 'shake 0.5s ease-in-out';
         setTimeout(() => {
@@ -188,17 +187,17 @@ body.hidden-content > *:not(.password-overlay) {
 function initLoveTimer() {
     // 🎯 重要：修改为你们实际在一起的日期！
     const startDate = new Date('2025-06-28'); // 格式：年-月-日
-    
+
     function updateLoveTimer() {
         const now = new Date();
         const diff = now - startDate;
-        
+
         // 计算时间
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        
+
         // 更新显示
         document.getElementById('loveTimer').innerHTML = 
             `我们已经相爱 <span style="color:#ff4757;">${days}</span> 天 
@@ -206,7 +205,7 @@ function initLoveTimer() {
             <span style="color:#ff8e8e;">${minutes}</span> 分钟 
             <span style="color:#ffafbd;">${seconds}</span> 秒 💖`;
     }
-    
+
     // 启动计时器
     updateLoveTimer();
     setInterval(updateLoveTimer, 1000);
@@ -222,8 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
 console.log('计时器元素:', document.getElementById('loveTimer'));
 </script>
     <script>
-let currentReplyId = null;
-
+// 💌 情书系统功能
 let letters = JSON.parse(localStorage.getItem('loveLetters')) || [];
 let currentReplyId = null;
 
@@ -236,12 +234,12 @@ function initLettersSystem() {
 function sendLetter() {
     const to = document.getElementById('letterTo').value;
     const content = document.getElementById('letterContent').value.trim();
-    
+
     if (!content) {
         alert('💝 请先写下你的心里话哦~');
         return;
     }
-    
+
     const letter = {
         id: Date.now(),
         from: to === 'you' ? '冯小朋友' : '游先生',
@@ -250,14 +248,14 @@ function sendLetter() {
         timestamp: new Date().toLocaleString('zh-CN'),
         reply: null
     };
-    
+
     letters.unshift(letter);
     saveLetters();
     displayLetters();
-    
+
     // 清空输入框
     document.getElementById('letterContent').value = '';
-    
+
     // 显示发送成功动画
     showMessage('💌 情书已寄出！');
 }
@@ -274,12 +272,12 @@ function saveDraft() {
 // 显示所有情书
 function displayLetters() {
     const container = document.getElementById('lettersContainer');
-    
+
     if (letters.length === 0) {
         container.innerHTML = '<div class="no-letters">还没有情书呢，写第一封吧！</div>';
         return;
     }
-    
+
     container.innerHTML = letters.map(letter => `
         <div class="letter-item">
             <div class="letter-header">
@@ -306,7 +304,7 @@ function displayLetters() {
 function showReplyForm(letterId) {
     currentReplyId = letterId;
     document.getElementById('replySection').style.display = 'block';
-    
+
     // 滚动到回复区域
     document.getElementById('replySection').scrollIntoView({ 
         behavior: 'smooth' 
@@ -316,27 +314,27 @@ function showReplyForm(letterId) {
 // 发送回复
 function sendReply() {
     const content = document.getElementById('replyContent').value.trim();
-    
+
     if (!content) {
         alert('💝 请写下你的回复哦~');
         return;
     }
-    
+
     const letter = letters.find(l => l.id === currentReplyId);
     if (letter) {
         letter.reply = {
             content: content,
             timestamp: new Date().toLocaleString('zh-CN')
         };
-        
+
         saveLetters();
         displayLetters();
-        
+
         // 隐藏回复区域并清空
         document.getElementById('replySection').style.display = 'none';
         document.getElementById('replyContent').value = '';
         currentReplyId = null;
-        
+
         showMessage('💌 回复已发送！');
     }
 }
@@ -362,121 +360,9 @@ function showMessage(text) {
         z-index: 10000;
         animation: slideInRight 0.5s ease;
     `;
-    
+
     document.body.appendChild(message);
-    
-    setTimeout(() => {
-        message.remove();
-    }, 3000);
-}
 
-// 加载草稿
-function loadDraft() {
-    const draft = localStorage.getItem('letterDraft');
-    if (draft) {
-        document.getElementById('letterContent').value = draft;
-    }
-}
-
-// 页面加载时初始化
-document.addEventListener('DOMContentLoaded', function() {
-    initLettersSystem();
-    loadDraft();
-});
-// 显示所有情书
-function displayLetters() {
-    const container = document.getElementById('lettersContainer');
-    
-    if (letters.length === 0) {
-        container.innerHTML = '<div class="no-letters">还没有情书呢，写第一封吧！</div>';
-        return;
-    }
-    
-    container.innerHTML = letters.map(letter => `
-        <div class="letter-item">
-            <div class="letter-header">
-                <div class="letter-from">💝 ${letter.from} → ${letter.to}</div>
-                <div class="letter-time">${letter.timestamp}</div>
-            </div>
-            <div class="letter-content">${letter.content}</div>
-            ${letter.reply ? `
-                <div class="letter-reply">
-                    <div class="reply-header">💌 ${letter.to}的回复：</div>
-                    <div class="reply-content">${letter.reply.content}</div>
-                    <div class="reply-time">${letter.reply.timestamp}</div>
-                </div>
-            ` : `
-                <button onclick="showReplyForm(${letter.id})" class="reply-btn" style="margin-top: 10px; padding: 8px 15px;">
-                    ✍️ 回复这封情书
-                </button>
-            `}
-        </div>
-    `).join('');
-}
-
-// 显示回复表单
-function showReplyForm(letterId) {
-    currentReplyId = letterId;
-    document.getElementById('replySection').style.display = 'block';
-    
-    // 滚动到回复区域
-    document.getElementById('replySection').scrollIntoView({ 
-        behavior: 'smooth' 
-    });
-}
-
-// 发送回复
-function sendReply() {
-    const content = document.getElementById('replyContent').value.trim();
-    
-    if (!content) {
-        alert('💝 请写下你的回复哦~');
-        return;
-    }
-    
-    const letter = letters.find(l => l.id === currentReplyId);
-    if (letter) {
-        letter.reply = {
-            content: content,
-            timestamp: new Date().toLocaleString('zh-CN')
-        };
-        
-        saveLetters();
-        displayLetters();
-        
-        // 隐藏回复区域并清空
-        document.getElementById('replySection').style.display = 'none';
-        document.getElementById('replyContent').value = '';
-        currentReplyId = null;
-        
-        showMessage('💌 回复已发送！');
-    }
-}
-
-// 保存到本地存储
-function saveLetters() {
-    localStorage.setItem('loveLetters', JSON.stringify(letters));
-}
-
-// 显示消息提示
-function showMessage(text) {
-    const message = document.createElement('div');
-    message.textContent = text;
-    message.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 25px;
-        box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
-        z-index: 10000;
-        animation: slideInRight 0.5s ease;
-    `;
-    
-    document.body.appendChild(message);
-    
     setTimeout(() => {
         message.remove();
     }, 3000);
@@ -523,16 +409,16 @@ let markers = [];
 function initLoveMap() {
     // 创建地图，以莆田市为中心 - 莆田市坐标：[25.454, 119.008]
     loveMap = L.map('loveMap').setView([25.454, 119.008], 12); // 莆田市中心，缩放级别12
-    
+
     // 添加地图图层（使用高德地图）
     L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
         subdomains: ['1', '2', '3', '4'],
         attribution: '&copy; <a href="https://www.amap.com/">高德地图</a>'
     }).addTo(loveMap);
-    
+
     // 在莆田市位置添加一个特殊标记
     addPutianCenterMarker();
-    
+
     // 加载已有的回忆地点
     loadMemories();
 }
@@ -547,7 +433,7 @@ function addPutianCenterMarker() {
             iconAnchor: [20, 40]
         })
     }).addTo(loveMap);
-    
+
     putianMarker.bindPopup(`
         <div class="map-popup">
             <h4>🏠莆田</h4>
@@ -562,12 +448,12 @@ function addMemoryLocation() {
     const address = document.getElementById('locationAddress').value.trim();
     const date = document.getElementById('visitDate').value;
     const description = document.getElementById('memoryDescription').value.trim();
-    
+
     if (!name || !address) {
         alert('💝 请至少填写地点名称和地址哦~');
         return;
     }
-    
+
     // 使用莆田市范围内的随机坐标
     const memory = {
         id: Date.now(),
@@ -578,18 +464,18 @@ function addMemoryLocation() {
         coordinates: getPutianCoordinates(), // 使用莆田范围内的坐标
         type: 'memory'
     };
-    
+
     memories.push(memory);
     saveMemories();
     addMarkerToMap(memory);
     updateMemoriesList();
-    
+
     // 清空表单
     document.getElementById('locationName').value = '';
     document.getElementById('locationAddress').value = '';
     document.getElementById('visitDate').value = '';
     document.getElementById('memoryDescription').value = '';
-    
+
     showMessage('📍 回忆地点已添加！');
 }
 
@@ -602,7 +488,7 @@ function getPutianCoordinates() {
         east: 119.3,   // 东经
         west: 118.7    // 西经
     };
-    
+
     const lat = putianBounds.south + Math.random() * (putianBounds.north - putianBounds.south);
     const lng = putianBounds.west + Math.random() * (putianBounds.east - putianBounds.west);
     return [lat, lng];
@@ -618,7 +504,7 @@ function addMarkerToMap(memory) {
             iconAnchor: [15, 30]
         })
     }).addTo(loveMap);
-    
+
     // 弹出信息框
     marker.bindPopup(`
         <div class="map-popup">
@@ -629,7 +515,7 @@ function addMarkerToMap(memory) {
             <button onclick="focusOnMemory(${memory.id})" class="focus-btn">🔍 查看详情</button>
         </div>
     `);
-    
+
     markers.push({ id: memory.id, marker: marker });
 }
 
@@ -638,7 +524,7 @@ function focusOnMemory(memoryId) {
     const memory = memories.find(m => m.id === memoryId);
     if (memory) {
         loveMap.setView(memory.coordinates, 15); // 放大到更近的级别
-        
+
         // 高亮对应的列表项
         document.querySelectorAll('.memory-item').forEach(item => {
             item.classList.remove('active');
@@ -653,12 +539,12 @@ function focusOnMemory(memoryId) {
 // 更新回忆列表
 function updateMemoriesList() {
     const container = document.getElementById('memoriesList');
-    
+
     if (memories.length === 0) {
         container.innerHTML = '<div class="no-memories">还没有添加回忆地点呢~</div>';
         return;
     }
-    
+
     container.innerHTML = memories.map(memory => `
         <div class="memory-item" data-id="${memory.id}" onclick="focusOnMemory(${memory.id})">
             <div class="memory-name">📍 ${memory.name}</div>
@@ -698,9 +584,9 @@ function showMessage(text) {
         z-index: 10000;
         animation: slideInRight 0.5s ease;
     `;
-    
+
     document.body.appendChild(message);
-    
+
     setTimeout(() => {
         message.remove();
     }, 3000);
@@ -808,7 +694,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <h2>我们的爱情回忆录</h2>
         <p>记录每一个心动瞬间</p>
     </div>
-    
+
     <div class="memory-timeline">
         <!-- 回忆1 -->
         <div class="memory-item">
@@ -818,7 +704,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="memory-text">阴差阳错的一个凌晨四点到凌晨六点，一个打王者后有点兴奋睡不着的大学生和另外一个突发奇想从声控直播间出来的大学生在凌晨四点相遇了，简直就是世界上的另外一个自己（深爱着爷爷奶奶，荨麻疹和湿疹，席瑞，乒乓球...）。一切都很合拍，一切都刚刚好。人像就算了还在莆田学院，当时真的狠狠吓了一跳。一通电话，我们的故事开始~</div>
             </div>
         </div>
-        
+
         <!-- 回忆2 -->
         <div class="memory-item">
             <div class="memory-date">2025.01.28</div>
@@ -827,7 +713,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="memory-text">"新年快乐！""新年快乐！"那时候我们还没有见过面 烟花绽开下我们的呐喊 是沉寂的心怦然心动的乐章 不久的将来 我们会一起过除夕 想想就觉得很幸福</div>
             </div>
         </div>
-        
+
         <!-- 回忆3 -->
         <div class="memory-item">
             <div class="memory-date">2025.05.01</div>
@@ -836,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="memory-text">比较喜欢的是第一次约会的第三天 这是我们关系的第一个里程碑 猫咖的小猫猫很像你 我们在往更对的方向接近</div>
             </div>
         </div>
-        
+
         <!-- 回忆4 -->
         <div class="memory-item">
             <div class="memory-date">2025.06.28</div>
@@ -845,7 +731,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="memory-text">第三次约会 我们正式确定关系啦 一起吃烧烤一起去ktv（然后我就把宝宝强吻了） 之前不是"定定定"吗，小宝宝还说"定住了就解不开啦" 那定住了后冷静期我想通了我就要把我的初吻给你了  后面我们开始了我们第一次旅游！（虽然只是湄洲岛）  不过我们未来还会去很多很多的地方。记忆里那一天很热 不过你在身边的心情很舒爽 那天的晚风很舒服 日出很美丽</div>
             </div>
         </div>
-        
+
         <!-- 回忆5 -->
         <div class="memory-item">
             <div class="memory-date">2025.09.01</div>
@@ -854,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="memory-text">小宝宝的身体真的好软好软 大概是我的生理选择了你 我闻到一种从来都没有闻到过得香味 这次和第三次约会的刚开始都出了点小意外 宝宝的手被烫到了 当时真的心疼的不行 你是我的小宝藏 我要好好保护好你</div>
             </div>
         </div>
-        
+
         <!-- 回忆6 -->
         <div class="memory-item">
             <div class="memory-date">2025.10.07</div>
@@ -863,7 +749,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="memory-text">两天时间只去了个西街 至于其他时间..我们两个心里都清楚 你的身体有一股只有我可以感受到的暖流 带的芬香刺激我的心 解开你蹂躏你 微光下性感的躯体夹杂痛苦又享受的呻吟 被我占有的你格外的美丽 凌晨四点的夜里 我宣誓了你身体的主权 写下了我的名字</div>
             </div>
         </div>
-        
+
         <!-- 回忆7 -->
         <div class="memory-item">
             <div class="memory-date">2025.10.08</div>
@@ -874,7 +760,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <!-- 可以继续添加更多回忆 -->
     </div>
-    
+
     <div class="memory-footer">
         <div class="floating-hearts">💖💕💗💓💞</div>
         <p>游先生和小冯同学的故事还有很多很多 一直都会有 直到慢慢的老去 直到我们一起飞到了另外一个世界上 由新的小小的亲爱的人 来回忆我们</p>
@@ -930,7 +816,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- 地图容器 -->
     <div class="map-container">
         <div id="loveMap" class="love-map"></div>
-        
+
         <!-- 地图控制面板 -->
         <div class="map-controls">
             <div class="add-memory">
@@ -943,13 +829,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button onclick="addMemoryLocation()" class="add-btn">📍 添加回忆地点</button>
                 </div>
             </div>
-            
+
             <div class="memories-list">
                 <h3>📌 我们的足迹</h3>
                 <div id="memoriesList" class="memories-container">
                     <!-- 回忆地点列表会动态显示在这里 -->
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+
+    <footer>
+        <p>Created with love for you. 💖</p>
+    </footer>
+</body>
+</html>
         </div>
     </div>
 </section>
