@@ -304,7 +304,26 @@ function displayLetters() {
 function showReplyForm(letterId) {
     currentReplyId = letterId;
     document.getElementById('replySection').style.display = 'block';
-
+<!-- 添加到你的情书HTML中，在情书列表后面 -->
+<div id="dataManagement" style="margin-top: 30px; padding: 20px; background: #fff9f9; border-radius: 10px;">
+    <h3>📁 云端数据管理</h3>
+    
+    <!-- JSON数据展示 -->
+    <div id="jsonOutput" style="display: none;">
+        <h4>💾 请复制以下内容到GitHub：</h4>
+        <textarea id="jsonData" readonly style="width: 100%; height: 200px; font-family: monospace; padding: 10px; border: 1px solid #ff6b6b; border-radius: 5px;"></textarea>
+        <button onclick="copyJsonData()" style="margin-top: 10px; padding: 8px 15px; background: #ff6b6b; color: white; border: none; border-radius: 5px;">📋 复制JSON数据</button>
+        <div style="margin-top: 10px;">
+            <button onclick="showStepByStepGuide()" style="padding: 8px 15px; background: #4caf50; color: white; border: none; border-radius: 5px;">📖 查看详细操作指南</button>
+        </div>
+    </div>
+    
+    <!-- 操作指南 -->
+    <div id="stepGuide" style="display: none; margin-top: 20px; text-align: left;">
+        <h4>🎯 详细操作步骤：</h4>
+        <div id="guideSteps"></div>
+    </div>
+</div>
     // 滚动到回复区域
     document.getElementById('replySection').scrollIntoView({ 
         behavior: 'smooth' 
