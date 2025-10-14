@@ -222,7 +222,8 @@ console.log('计时器元素:', document.getElementById('loveTimer'));
 </script>
     <script>
 let currentReplyId = null;
-
+<!-- 引入GitHub数据管理 -->
+<script src="js/github-data.js"></script>
 // 初始化情书系统
 async function initLettersSystem() {
     await githubLoveData.loadLetters();
