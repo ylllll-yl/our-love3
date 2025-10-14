@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我们的小时光</title>
-     <script src="//cdn.jsdelivr.net/npm/leancloud-storage@4.13.2/dist/av-min.js"></script>
-    <script src="js/cloudLove.js"></script>
+<script src="//cdn.jsdelivr.net/npm/leancloud-storage@4.13.2/dist/av-min.js"></script>
+<script src="js/loveData.js"></script>
     <!-- 小猫小狗装饰 -->
 <div class="cat-decoration">🐱</div>
 <div class="dog-decoration">🐶</div>
@@ -224,23 +224,16 @@ console.log('计时器元素:', document.getElementById('loveTimer'));
     <script>
 let currentReplyId = null;
 
+let letters = JSON.parse(localStorage.getItem('loveLetters')) || [];
+let currentReplyId = null;
+
 // 初始化情书系统
-        <!-- 引入 LeanCloud SDK -->
-<script src="//cdn.jsdelivr.net/npm/leancloud-storage@4.13.2/dist/av-min.js"></script>
-<!-- 引入云端情书管理器 -->
-<script src="js/cloudLove.js"></script>
-async function initLettersSystem() {
-    const success = await cloudLoveManager.init();
-    if (success) {
-        showMessage('💖 云端情书系统已连接！');
-    } else {
-        showMessage('⚠️ 使用本地存储，数据仅限本设备');
-    }
+function initLettersSystem() {
     displayLetters();
 }
 
 // 发送情书
-async function sendLetter() {
+function sendLetter() {
     const to = document.getElementById('letterTo').value;
     const content = document.getElementById('letterContent').value.trim();
     
@@ -250,7 +243,7 @@ async function sendLetter() {
     }
     
     const letter = {
-        id: Date.now().toString(), // 转为字符串，兼容云端ID
+        id: Date.now(),
         from: to === 'you' ? '冯小朋友' : '游先生',
         to: to === 'you' ? '游先生' : '冯小朋友',
         content: content,
@@ -258,18 +251,15 @@ async function sendLetter() {
         reply: null
     };
     
-    const cloudSuccess = await cloudLoveManager.addLetter(letter);
+    letters.unshift(letter);
+    saveLetters();
     displayLetters();
     
     // 清空输入框
     document.getElementById('letterContent').value = '';
     
     // 显示发送成功动画
-    if (cloudSuccess) {
-        showMessage('💌 情书已寄出到云端！');
-    } else {
-        showMessage('💌 情书已保存到本地！');
-    }
+    showMessage('💌 情书已寄出！');
 }
 
 // 保存草稿
@@ -284,7 +274,6 @@ function saveDraft() {
 // 显示所有情书
 function displayLetters() {
     const container = document.getElementById('lettersContainer');
-    const letters = cloudLoveManager.getLetters();
     
     if (letters.length === 0) {
         container.innerHTML = '<div class="no-letters">还没有情书呢，写第一封吧！</div>';
@@ -305,7 +294,7 @@ function displayLetters() {
                     <div class="reply-time">${letter.reply.timestamp}</div>
                 </div>
             ` : `
-                <button onclick="showReplyForm('${letter.id}')" class="reply-btn" style="margin-top: 10px; padding: 8px 15px;">
+                <button onclick="showReplyForm(${letter.id})" class="reply-btn" style="margin-top: 10px; padding: 8px 15px;">
                     ✍️ 回复这封情书
                 </button>
             `}
@@ -325,7 +314,7 @@ function showReplyForm(letterId) {
 }
 
 // 发送回复
-async function sendReply() {
+function sendReply() {
     const content = document.getElementById('replyContent').value.trim();
     
     if (!content) {
@@ -333,24 +322,28 @@ async function sendReply() {
         return;
     }
     
-    const reply = {
-        content: content,
-        timestamp: new Date().toLocaleString('zh-CN')
-    };
-    
-    const cloudSuccess = await cloudLoveManager.addReply(currentReplyId, reply);
-    displayLetters();
-    
-    // 隐藏回复区域并清空
-    document.getElementById('replySection').style.display = 'none';
-    document.getElementById('replyContent').value = '';
-    currentReplyId = null;
-    
-    if (cloudSuccess) {
-        showMessage('💌 回复已发送到云端！');
-    } else {
-        showMessage('💌 回复已保存到本地！');
+    const letter = letters.find(l => l.id === currentReplyId);
+    if (letter) {
+        letter.reply = {
+            content: content,
+            timestamp: new Date().toLocaleString('zh-CN')
+        };
+        
+        saveLetters();
+        displayLetters();
+        
+        // 隐藏回复区域并清空
+        document.getElementById('replySection').style.display = 'none';
+        document.getElementById('replyContent').value = '';
+        currentReplyId = null;
+        
+        showMessage('💌 回复已发送！');
     }
+}
+
+// 保存到本地存储
+function saveLetters() {
+    localStorage.setItem('loveLetters', JSON.stringify(letters));
 }
 
 // 显示消息提示
@@ -390,15 +383,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initLettersSystem();
     loadDraft();
 });
-// 保存草稿
-function saveDraft() {
-    const content = document.getElementById('letterContent').value;
-    if (content) {
-        localStorage.setItem('letterDraft', content);
-        showMessage('📁 草稿已保存！');
-    }
-}
-
 // 显示所有情书
 function displayLetters() {
     const container = document.getElementById('lettersContainer');
