@@ -221,25 +221,29 @@ document.addEventListener('DOMContentLoaded', function() {
 console.log('计时器元素:', document.getElementById('loveTimer'));
 </script>
     <script>
-// 💌 情书系统功能
-let letters = JSON.parse(localStorage.getItem('loveLetters')) || [];
 let currentReplyId = null;
 
 // 初始化情书系统
-function initLettersSystem() {
+async function initLettersSystem() {
+    await githubLoveData.loadLetters();
     displayLetters();
+    
+    // 检查是否有新数据需要同步
+    if (githubLoveData.hasUnsavedData()) {
+        document.getElementById('jsonOutput').style.display = 'block';
+    }
 }
 
 // 发送情书
-function sendLetter() {
+async function sendLetter() {
     const to = document.getElementById('letterTo').value;
     const content = document.getElementById('letterContent').value.trim();
-
+    
     if (!content) {
         alert('💝 请先写下你的心里话哦~');
         return;
     }
-
+    
     const letter = {
         id: Date.now(),
         from: to === 'you' ? '冯小朋友' : '游先生',
@@ -248,16 +252,107 @@ function sendLetter() {
         timestamp: new Date().toLocaleString('zh-CN'),
         reply: null
     };
-
-    letters.unshift(letter);
-    saveLetters();
+    
+    await githubLoveData.addLetter(letter);
     displayLetters();
-
+    
     // 清空输入框
     document.getElementById('letterContent').value = '';
-
+    
     // 显示发送成功动画
-    showMessage('💌 情书已寄出！');
+    showMessage('💌 情书已保存！请按照指引同步到云端！');
+}
+
+// 发送回复
+async function sendReply() {
+    const content = document.getElementById('replyContent').value.trim();
+    
+    if (!content) {
+        alert('💝 请写下你的回复哦~');
+        return;
+    }
+    
+    const reply = {
+        content: content,
+        timestamp: new Date().toLocaleString('zh-CN')
+    };
+    
+    const success = await githubLoveData.addReply(currentReplyId, reply);
+    
+    if (success) {
+        displayLetters();
+        
+        // 隐藏回复区域并清空
+        document.getElementById('replySection').style.display = 'none';
+        document.getElementById('replyContent').value = '';
+        currentReplyId = null;
+        
+        showMessage('💌 回复已保存！请同步到云端！');
+    }
+}
+
+// 显示所有情书
+function displayLetters() {
+    const container = document.getElementById('lettersContainer');
+    const letters = githubLoveData.getLetters();
+    
+    if (letters.length === 0) {
+        container.innerHTML = '<div class="no-letters">还没有情书呢，写第一封吧！</div>';
+        return;
+    }
+    
+    container.innerHTML = letters.map(letter => `
+        <div class="letter-item">
+            <div class="letter-header">
+                <div class="letter-from">💝 ${letter.from} → ${letter.to}</div>
+                <div class="letter-time">${letter.timestamp}</div>
+            </div>
+            <div class="letter-content">${letter.content}</div>
+            ${letter.reply ? `
+                <div class="letter-reply">
+                    <div class="reply-header">💌 ${letter.to}的回复：</div>
+                    <div class="reply-content">${letter.reply.content}</div>
+                    <div class="reply-time">${letter.reply.timestamp}</div>
+                </div>
+            ` : `
+                <button onclick="showReplyForm(${letter.id})" class="reply-btn" style="margin-top: 10px; padding: 8px 15px;">
+                    ✍️ 回复这封情书
+                </button>
+            `}
+        </div>
+    `).join('');
+}
+
+// 保留你原有的这些函数（不要修改）：
+// showReplyForm, showMessage, saveDraft, loadDraft, saveLetters
+// 只需要修改上面那几个核心函数即可
+
+// 显示回复表单
+function showReplyForm(letterId) {
+    currentReplyId = letterId;
+    document.getElementById('replySection').style.display = 'block';
+    document.getElementById('replySection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// 显示消息提示
+function showMessage(text) {
+    const message = document.createElement('div');
+    message.textContent = text;
+    message.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 25px;
+        box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        z-index: 10000;
+        animation: slideInRight 0.5s ease;
+    `;
+    
+    document.body.appendChild(message);
+    setTimeout(() => message.remove(), 3000);
 }
 
 // 保存草稿
@@ -269,6 +364,19 @@ function saveDraft() {
     }
 }
 
+// 加载草稿
+function loadDraft() {
+    const draft = localStorage.getItem('letterDraft');
+    if (draft) {
+        document.getElementById('letterContent').value = draft;
+    }
+}
+
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', function() {
+    initLettersSystem();
+    loadDraft();
+});
 // 显示所有情书
 function displayLetters() {
     const container = document.getElementById('lettersContainer');
