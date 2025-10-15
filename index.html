@@ -382,7 +382,104 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDraft();
 });
 </script>
+// 🎯 一起待完成的小事件功能
+let todos = JSON.parse(localStorage.getItem('loveTodos')) || [
+    { id: 1, text: '一起做摩天轮', completed: false },
+    { id: 2, text: '一起去公园野餐放风筝', completed: false },
+    { id: 3, text: '一起看日出日落', completed: false },
+    { id: 4, text: '为对方写一首情诗', completed: false }
+];
 
+function initTodos() {
+    displayTodos();
+}
+
+function displayTodos() {
+    const todoList = document.getElementById('todoList');
+    
+    if (todos.length === 0) {
+        todoList.innerHTML = '<div style="text-align: center; color: #ff8e8e; padding: 20px;">还没有计划的小事件呢，添加第一个吧！</div>';
+        return;
+    }
+    
+    todoList.innerHTML = todos.map(todo => `
+        <div class="todo-item ${todo.completed ? 'completed' : ''}">
+            <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" 
+                 onclick="toggleTodo(${todo.id})"></div>
+            <div class="todo-text">${todo.text}</div>
+            <button class="delete-btn" onclick="deleteTodo(${todo.id})">🗑️</button>
+        </div>
+    `).join('');
+}
+
+function toggleTodo(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+        todo.completed = !todo.completed;
+        saveTodos();
+        displayTodos();
+        
+        if (todo.completed) {
+            showRomanticMessage();
+        }
+    }
+}
+
+function showRomanticMessage() {
+    alert('慢慢变成彼此的旧人，慢慢爱着彼此，慢慢发生更多更多新事 💖');
+}
+
+function addNewTodo() {
+    const input = document.getElementById('newTodo');
+    const text = input.value.trim();
+    
+    if (text) {
+        const newTodo = {
+            id: Date.now(),
+            text: text,
+            completed: false
+        };
+        
+        todos.unshift(newTodo);
+        saveTodos();
+        displayTodos();
+        input.value = '';
+        
+        // 使用你现有的showMessage函数
+        if (typeof showMessage === 'function') {
+            showMessage('✅ 新事件已添加！');
+        } else {
+            alert('✅ 新事件已添加！');
+        }
+    } else {
+        alert('💝 请输入要添加的事件哦~');
+    }
+}
+
+function deleteTodo(id) {
+    if (confirm('确定要删除这个美好的计划吗？')) {
+        todos = todos.filter(t => t.id !== id);
+        saveTodos();
+        displayTodos();
+    }
+}
+
+function saveTodos() {
+    localStorage.setItem('loveTodos', JSON.stringify(todos));
+}
+
+// 支持按Enter键添加
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('newTodo');
+    if (input) {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addNewTodo();
+            }
+        });
+    }
+    initTodos();
+});
 <style>
 @keyframes slideInRight {
     from {
@@ -839,7 +936,22 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </section>
-
+<!-- 🎯 一起待完成的小事件 -->
+<section class="todo-section">
+    <div class="todo-header">
+        <h2>🎯 一起待完成的小事件</h2>
+        <p class="todo-subtitle">慢慢变成彼此的旧人，慢慢爱着彼此，慢慢发生更多更多新事 💖</p>
+    </div>
+    
+    <div class="todo-input-group">
+        <input type="text" id="newTodo" placeholder="添加新的待完成事件..." class="todo-input">
+        <button onclick="addNewTodo()" class="add-btn">+ 添加</button>
+    </div>
+    
+    <div class="todo-list" id="todoList">
+        <!-- 待办事项会动态显示在这里 -->
+    </div>
+</section>
 
     <footer>
         <p>Created with love for you. 💖</p>
