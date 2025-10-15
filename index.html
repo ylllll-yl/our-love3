@@ -384,14 +384,14 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </script>
 
-<!-- 🎯 一起待完成的小事件功能 -->
+<!-- 🎯 一起待完成的小事件 -->
 <script>
-// 🎯 一起待完成的小事件功能
+// 🎯 一起待完成的小事件
 let todos = JSON.parse(localStorage.getItem('loveTodos')) || [
-    { id: 1, text: '一起做摩天轮', completed: false },
+    { id: 1, text: '一起坐摩天轮', completed: false },
     { id: 2, text: '一起去公园野餐放风筝', completed: false },
-    { id: 3, text: '一起看日出日落', completed: false },
-    { id: 4, text: '为对方写一首情诗', completed: false }
+    { id: 3, text: '一起穿情侣装去逛街', completed: false },
+    { id: 4, text: '', completed: false }
 ];
 
 function initTodos() {
@@ -430,7 +430,7 @@ function toggleTodo(id) {
 }
 
 function showRomanticMessage() {
-    alert('慢慢变成彼此的旧人，慢慢爱着彼此，慢慢发生更多更多新事 💖');
+    alert('慢慢变成彼此的旧人，慢慢爱着彼此，慢慢发生更多新事 💖');
 }
 
 function addNewTodo() {
@@ -456,12 +456,12 @@ function addNewTodo() {
             alert('✅ 新事件已添加！');
         }
     } else {
-        alert('💝 请输入要添加的事件哦~');
+        alert('💝 请输入要添加的事件哦我的小笨蛋~');
     }
 }
 
 function deleteTodo(id) {
-    if (confirm('确定要删除这个美好的计划吗？')) {
+    if (confirm('确定要删除吗？可不要删错了哟小笨蛋')) {
         todos = todos.filter(t => t.id !== id);
         saveTodos();
         displayTodos();
