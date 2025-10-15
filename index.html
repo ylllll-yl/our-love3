@@ -382,6 +382,10 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDraft();
 });
 </script>
+</script>
+
+<!-- 🎯 一起待完成的小事件功能 -->
+<script>
 // 🎯 一起待完成的小事件功能
 let todos = JSON.parse(localStorage.getItem('loveTodos')) || [
     { id: 1, text: '一起做摩天轮', completed: false },
@@ -480,6 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     initTodos();
 });
+</script>
 <style>
 @keyframes slideInRight {
     from {
