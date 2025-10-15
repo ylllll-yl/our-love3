@@ -653,7 +653,144 @@ document.addEventListener('DOMContentLoaded', function() {
         <h1>❤️游先生和冯小朋友的小时光❤️</h1>
         <p>这里记录着我们在一起的每一个美好瞬间</p>
     </header>
+// 待办事项数据
+let todos = JSON.parse(localStorage.getItem('loveTodos')) || [
+    { id: 1, text: '一起做摩天轮', completed: false },
+    { id: 2, text: '一起去公园野餐放风筝', completed: false },
+    { id: 3, text: '一起看日出日落', completed: false },
+    { id: 4, text: '为对方写一首情诗', completed: false },
+    { id: 5, text: '一起做一顿浪漫晚餐', completed: false }
+];
 
+// 初始化待办事项
+function initTodos() {
+    displayTodos();
+}
+
+// 显示所有待办事项
+function displayTodos() {
+    const todoList = document.getElementById('todoList');
+    
+    if (todos.length === 0) {
+        todoList.innerHTML = '<div class="no-todos">还没有计划的小事件呢，添加第一个吧！</div>';
+        return;
+    }
+    
+    todoList.innerHTML = todos.map(todo => `
+        <div class="todo-item ${todo.completed ? 'completed' : ''}">
+            <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" 
+                 onclick="toggleTodo(${todo.id})"></div>
+            <div class="todo-text">${todo.text}</div>
+            <button class="delete-btn" onclick="deleteTodo(${todo.id})">🗑️</button>
+        </div>
+    `).join('');
+}
+
+// 切换完成状态
+function toggleTodo(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+        todo.completed = !todo.completed;
+        saveTodos();
+        displayTodos();
+        
+        // 显示浪漫提示
+        if (todo.completed) {
+            showRomanticMessage();
+        }
+    }
+}
+
+function showRomanticMessage() {
+    const message = document.createElement('div');
+    message.innerHTML = '慢慢变成彼此的旧人，慢慢爱着彼此，慢慢发生更多更多新事 💖';
+    message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #e91e63, #ff6b6b);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(233, 30, 99, 0.3);
+        z-index: 10000;
+        text-align: center;
+        font-size: 16px;
+        animation: fadeInOut 3s ease-in-out;
+    `;
+    
+    // 添加动画样式
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -40%); }
+            20% { opacity: 1; transform: translate(-50%, -50%); }
+            80% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -60%); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(message);
+    
+    setTimeout(() => {
+        message.remove();
+        style.remove();
+    }, 3000);
+}
+
+// 添加新待办事项
+function addNewTodo() {
+    const input = document.getElementById('newTodo');
+    const text = input.value.trim();
+    
+    if (text) {
+        const newTodo = {
+            id: Date.now(),
+            text: text,
+            completed: false
+        };
+        
+        todos.unshift(newTodo);
+        saveTodos();
+        displayTodos();
+        input.value = '';
+        
+        // 显示添加成功提示
+        showMessage('✅ 新事件已添加！');
+    } else {
+        alert('💝 请输入要添加的事件哦~');
+    }
+}
+
+// 删除待办事项
+function deleteTodo(id) {
+    if (confirm('确定要删除这个美好的计划吗？')) {
+        todos = todos.filter(t => t.id !== id);
+        saveTodos();
+        displayTodos();
+        showMessage('🗑️ 事件已删除');
+    }
+}
+
+// 保存到本地存储
+function saveTodos() {
+    localStorage.setItem('loveTodos', JSON.stringify(todos));
+}
+
+// 支持按Enter键添加
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('newTodo');
+    if (input) {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addNewTodo();
+            }
+        });
+    }
+    initTodos();
+});
 <!-- 🕐这是一个幸福计数器-->
 <div class="love-timer-container">
     <div class="timer-heart">💖</div>
@@ -834,6 +971,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h3>📌 我们的足迹</h3>
                 <div id="memoriesList" class="memories-container">
                     <!-- 回忆地点列表会动态显示在这里 -->
+                    <!-- 一起待完成的小事件 -->
+<div class="todo-section">
+    <div class="todo-header">
+        <h2>🎯 一起待完成的小事件</h2>
+        <p class="todo-subtitle">慢慢变成彼此的旧人，慢慢爱着彼此，慢慢发生更多更多新事 💖</p>
+    </div>
+    
+    <div class="todo-input-group">
+        <input type="text" id="newTodo" placeholder="添加新的待完成事件..." class="todo-input">
+        <button onclick="addNewTodo()" class="add-btn">+ 添加</button>
+    </div>
+    
+    <div class="todo-list" id="todoList">
+        <!-- 待办事项会动态生成在这里 -->
+    </div>
+</div>
                 </div>
             </div>
         </div>
