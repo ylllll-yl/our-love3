@@ -957,9 +957,180 @@ document.addEventListener('DOMContentLoaded', function() {
         <!-- 待办事项会动态显示在这里 -->
     </div>
 </section>
+<!-- 💕 我们的默契度测试 -->
+<section class="compatibility-test">
+    <div class="test-header">
+        <h2>💞 我们的默契度测试</h2>
+        <p>看看我们有多了解彼此~</p>
+    </div>
+    
+    <div class="quiz-container" id="quizContainer">
+        <div class="question" id="question1">
+            <h3>问题 1/3</h3>
+            <p>我们第一次约会去了哪里？</p>
+            <div class="options">
+                <button onclick="selectAnswer(1, 'A')">A. 猫咖</button>
+                <button onclick="selectAnswer(1, 'B')">B. 电影院</button>
+                <button onclick="selectAnswer(1, 'C')">C. 餐厅</button>
+                <button onclick="selectAnswer(1, 'D')">D. 公园</button>
+            </div>
+        </div>
+        
+        <div class="question" id="question2" style="display: none;">
+            <h3>问题 2/3</h3>
+            <p>我最喜欢叫你什么？</p>
+            <div class="options">
+                <button onclick="selectAnswer(2, 'A')">A. 宝贝</button>
+                <button onclick="selectAnswer(2, 'B')">B. 小宝宝</button>
+                <button onclick="selectAnswer(2, 'C')">C. 老婆</button>
+                <button onclick="selectAnswer(2, 'D')">D. 小冯同学</button>
+            </div>
+        </div>
+        
+        <div class="question" id="question3" style="display: none;">
+            <h3>问题 3/3</h3>
+            <p>我们第一次旅行去了哪里？</p>
+            <div class="options">
+                <button onclick="selectAnswer(3, 'A')">A. 厦门</button>
+                <button onclick="selectAnswer(3, 'B')">B. 福州</button>
+                <button onclick="selectAnswer(3, 'C')">C. 湄洲岛</button>
+                <button onclick="selectAnswer(3, 'D')">D. 泉州</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 测试结果区域 -->
+    <div class="result-container" id="resultContainer" style="display: none;">
+        <div class="score-display">
+            <h3>测试结果</h3>
+            <div class="score" id="scoreText">默契度：0%</div>
+            <p id="resultMessage"></p>
+        </div>
+        
+        <!-- 小信封奖励 -->
+        <div class="envelope-reward" id="envelopeReward" style="display: none;">
+            <div class="envelope" onclick="openEnvelope()">
+                ✉️
+                <span class="envelope-tip">点击打开惊喜</span>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- 惊喜内容弹窗 -->
+<div class="surprise-modal" id="surpriseModal" style="display: none;">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeSurprise()">×</button>
+        <h3>💌 给最爱的你</h3>
+        <div class="surprise-text">
+            <p>亲爱的小冯同学：</p>
+            <p>当你看到这封信的时候，说明你已经完美通过了我们的默契度测试！这证明我们真的是世界上最了解彼此的人。</p>
+            <p>从那个凌晨四点的相遇，到现在的点点滴滴，每一个瞬间都让我更加确信，你就是我想要共度余生的人。</p>
+            <p>感谢你出现在我的生命里，让我的世界变得如此美好。未来的路还很长，我想牵着你的手，一起慢慢走下去...</p>
+            <p style="text-align: right; margin-top: 20px;">永远爱你的<br>游先生 💖</p>
+        </div>
+        
+        <!-- 视频播放 -->
+        <div class="video-container">
+            <video controls width="100%">
+                <source src="video/our-love.mp4" type="video/mp4">
+                你的浏览器不支持视频播放
+            </video>
+        </div>
+    </div>
+</div>
     <footer>
         <p>Created with love for you. 💖</p>
     </footer>
 </body>
+    // 💕 默契度测试功能
+const quizAnswers = {
+    1: 'A', // 第一题正确答案：A. 猫咖
+    2: 'B', // 第二题正确答案：B. 小宝宝  
+    3: 'C'  // 第三题正确答案：C. 湄洲岛
+};
+
+let userAnswers = {};
+let currentQuestion = 1;
+
+function selectAnswer(questionNum, answer) {
+    // 保存答案
+    userAnswers[questionNum] = answer;
+    
+    // 显示下一题或显示结果
+    if (questionNum < 3) {
+        // 隐藏当前题目，显示下一题
+        document.getElementById(`question${questionNum}`).style.display = 'none';
+        document.getElementById(`question${questionNum + 1}`).style.display = 'block';
+        currentQuestion = questionNum + 1;
+    } else {
+        // 所有题目答完，显示结果
+        showQuizResult();
+    }
+}
+
+function showQuizResult() {
+    // 计算得分
+    let correctCount = 0;
+    for (let i = 1; i <= 3; i++) {
+        if (userAnswers[i] === quizAnswers[i]) {
+            correctCount++;
+        }
+    }
+    
+    const score = Math.round((correctCount / 3) * 100);
+    
+    // 隐藏题目容器，显示结果容器
+    document.getElementById('quizContainer').style.display = 'none';
+    document.getElementById('resultContainer').style.display = 'block';
+    
+    // 更新得分显示
+    document.getElementById('scoreText').textContent = `默契度：${score}%`;
+    
+    // 根据得分显示不同消息
+    const message = getResultMessage(score);
+    document.getElementById('resultMessage').textContent = message;
+    
+    // 如果全部答对，显示信封奖励
+    if (correctCount === 3) {
+        document.getElementById('envelopeReward').style.display = 'block';
+    }
+}
+
+function getResultMessage(score) {
+    if (score === 100) {
+        return "🎉 完美！我们真是心有灵犀！你完全懂我！";
+    } else if (score >= 70) {
+        return "💝 很棒！我们很有默契，但还有进步空间哦~";
+    } else if (score >= 30) {
+        return "🤔 还不错，但我们还需要更多了解彼此呢";
+    } else {
+        return "💕 没关系，这说明我们还有更多了解彼此的机会！";
+    }
+}
+
+function openEnvelope() {
+    // 显示惊喜弹窗
+    document.getElementById('surpriseModal').style.display = 'flex';
+}
+
+function closeSurprise() {
+    // 关闭惊喜弹窗
+    document.getElementById('surpriseModal').style.display = 'none';
+}
+
+// 重新开始测试
+function restartQuiz() {
+    userAnswers = {};
+    currentQuestion = 1;
+    
+    // 重置显示
+    document.getElementById('quizContainer').style.display = 'block';
+    document.getElementById('resultContainer').style.display = 'none';
+    
+    // 显示第一题，隐藏其他题
+    document.getElementById('question1').style.display = 'block';
+    document.getElementById('question2').style.display = 'none';
+    document.getElementById('question3').style.display = 'none';
+}
 </html>
