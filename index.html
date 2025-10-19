@@ -382,15 +382,10 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDraft();
 });
 </script>
-</script>
-
-<!-- 🎯 一起待完成的小事件功能 -->
-<!-- 🎯 一起待完成的小事件 -->
-<script>
 // 🎯 一起待完成的小事件功能
 // 🎯 一起待完成的小事件
+    <script>
 let todos = JSON.parse(localStorage.getItem('loveTodos')) || [
-    { id: 1, text: '一起做摩天轮', completed: false },
     { id: 1, text: '一起坐摩天轮', completed: false },
     { id: 2, text: '一起去公园野餐放风筝', completed: false },
     { id: 3, text: '一起看日出日落', completed: false },
@@ -802,7 +797,7 @@ function showQuizResult() {
     document.getElementById('resultContainer').style.display = 'block';
     
     // 更新得分显示
-    document.getElementById('scoreText').textContent = `默契度：${score}%`;
+    document.getElementById('scoreText').textContent = `心有灵犀程度：${score}%`;
     
     // 根据得分显示不同消息
     const message = getResultMessage(score);
